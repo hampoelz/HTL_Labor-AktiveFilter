@@ -4,11 +4,11 @@
 \usepackage{styles/main}
 \usepackage{styles/custom}
 
-\labtitle{}
+\labtitle{Aktive Filter}
 
-\author{}
-\company{HTBLA Weiz}
-\date{}
+\author{Rene Hampölz, Gruppe 6}
+\company{HTBLA Weiz, 5BHET}
+\date{19. September 2022}
 
 \begin{document}
 \input{styles/htbla-labor.tex}
@@ -18,105 +18,271 @@
 
 \section{Einführung}
 
+Es soll ein aktiver \textit{(Butterworth-)} Filter der zweiten Ordnung über der Sallen-Key-Schaltung dimensiniert und aufgebaut werden. Des weiteren soll ein passiver Filter der zweiten Ordnung Simuliert werden.
+
 \begin{sagesilent}
-    R = 95.5
+    f_c = 1000
+    R = 100
 \end{sagesilent}
 
-Angaben: $R = \sage{norm(R)}\Omega$
+Angaben: $f_c = \sage{f_c}Hz$, $R_1 = R_2 = \sage{R}\Omega$, $C_1 = C_2$
 
-\section{Schaltung}
+\section{Passiver Tiefpass-Filter}
 
-\begin{figure}[H]
+\subsection{Schaltung \textit{(RC-Glied)}}
+
+\begin{multicols}{2}
+    \subsubsection{Erste Ordnung}
+
+    \begin{circuitikz}
+        \draw
+           (0,0)    coordinate (in+)
+        ++ (3,0)    coordinate (out+)
+           (0,-2)   coordinate (in-)
+        ++ (3,0)    coordinate (out-)
+
+        (in+)   to[R=$R$,o-] ++(2,0) coordinate (aux1)
+                to[short,-o] (out+)
+        (aux1)  to[C=$C$,*-*] (aux1 |- out-)
+        (in-)   to[short,o-o] (out-)
+
+        (in+)   to[open, v=$U_e$] (in-)
+        (out+)  to[open, v^=$U_a$] (out-)
+        ;
+    \end{circuitikz}
+
+    \medskip
+    
+    Für die Grenzfrequenz gilt:
+
+    \vspace{-1em}
+    \begin{flalign*}
+        f_c = \frac{1}{2\pi \cdot R \cdot C} &&
+        \text{bzw.} &&
+        w_c = \frac{f_c}{R \cdot C} &&
+    \end{flalign*}
+    
+    \columnbreak
+    \subsubsection{Zweite Ordnung}
+
+    \begin{circuitikz}
+        \draw
+           (0,0)    coordinate (in+)
+        ++ (5,0)    coordinate (out+)
+           (0,-2)   coordinate (in-)
+        ++ (5,0)    coordinate (out-)
+
+        (in+)   to[R=$R_1$,o-] ++(2,0) coordinate (aux1)
+                to[C=$C_1$,*-*] (aux1 |- out-)
+
+        (aux1)  to[R=$R_2$] ++(2,0) coordinate (aux3)
+                to[short,-o] (out+)
+        (aux3)  to[C=$C_2$,*-*] (aux3 |- out-)
+        
+        (in-)   to[short,o-o] (out-)
+
+        (in+)   to[open, v=$U_e$] (in-)
+        (out+)  to[open, v^=$U_a$] (out-)
+        ;
+    \end{circuitikz}
+
+    \medskip
+
+    Für die Grenzfrequenz gilt:
+
+    \vspace{-1em}
+    \begin{flalign*}
+        f_c = \frac{1}{2\pi \sqrt{R_1 R_2 C_1 C_2}} &&
+        \text{bzw.} &&
+        w_c = \frac{f_c}{\sqrt{R_1 R_2 C_1 C_2}} &&
+    \end{flalign*}
+\end{multicols}
+
+\subsection{Korrektur der Grenzfrequenz}
+
+Ab Filter der 2. Ordnung entspricht die Grenzfrequenz $f_c$ nicht mehr der Verstärkung von $-3dB$. Deshalb muss die Grenzfrequenz für die gewünschte Filter-Ordnung $n$ korrigiert werden:
+
+\vspace{-1em}
+\begin{align*}
+    f_{(-3dB)} = f_{c} \sqrt{2^{(\frac{1}{n})}-1} &&
+    \text{bzw.} &&
+    w_{(-3dB)} = w_{c} \sqrt{2^{(\frac{1}{n})}-1} &&
+\end{align*}
+
+\clearpage
+
+\section{Aktiver Tiefpass-Filter}
+
+\subsection{Schaltung \textit{(Sallen-Key-Topologie)}}
+
+\begin{figure}[h]
     \centering
     \begin{circuitikz}
         \draw
-          (0,0)     coordinate (in+)
-        ++(4,0)     coordinate (out+)
-          (0,-3)    coordinate (in-)
-        ++(4,0)     coordinate (out-)
+           (0,0)    coordinate (in+)
+        ++ (8,-0.5) coordinate (out+)
+           (0,-5)   coordinate (in-)
+        ++ (8,0)    coordinate (out-)
 
-        (in+) to[R=$R$,i=$I$,o-o] (out+)
-        (in-) to[short,o-o] (out-)
-        
+        (in+)       to[R=$R_1$,o-*]         ++(2,0)     coordinate (aux1)
+        ++(4,-0.5)  node[op amp,yscale=-1]  (opv) {}
+        (aux1)      to[R=$R_2$]             (opv.+)
+        ++(-0.5,0)  to[short,*-]            ++(0,-2)    coordinate (aux2)
+                    to[C=$C_2$,-*]          (aux2 |- out-)
+        (aux1)      to[short]               ++(0,2)     coordinate (aux3)
+                    to[C=$C_1$]             (aux3 -| opv.out)
+                    to[short]               (opv.out)
+                    to[short]               ++(0,-2)    coordinate (aux4)
+                    to[R=$R_3$,-*]          (aux4 |- out-)
+        (opv.-)     to[short]               ++(0,-1)    coordinate (aux5)
+                    to[R=$R_4$,-*]          (aux5 -| opv.out)
+        (opv.out)   to[short,-o]            (out+)
+        (in-)       to[short,o-o]           (out-)
+
         (in+)   to[open, v=$U_e$] (in-)
         (out+)  to[open, v^=$U_a$] (out-)
         ;
     \end{circuitikz}
 \end{figure}
 
-\section{Berechnungen}
+\subsubsection{Verstärkungsfaktor $K$}
 
-\begin{equation*}
-    \frac{U}{R \cdot I}
-\end{equation*}
+\begin{align*}
+    A_0 = K &= 1 + \frac{R_4}{R_3} \\
+    K &= 3 - \frac{1}{Q} \tag*{bei K >= 3 ist der Filter instabil!}
+\end{align*}
+
+\subsection{Filter-Polynom \textit{(Butterworth)}}
+
+Beim Butterworth-Polynom wird ein Signal an der Grenzfrequenz auf das $\frac{1}{\sqrt{2}} = 0,707$-fache des ursprünglichen Signals abgeschwächt. Daraus ergibt sich die Güte $G$, die Gleichspannungsverstärkung $K$, sowie die Übertragungsfunktion $\frac{U_a}{U_e}$:
 
 \begin{sagesilent}
-    I = 0.005
-    U = R * I
+    G = 1/sqrt(2)
+    G = numerical_approx(G, digits=4)
+
+    K = 3 - sqrt(2)
+    K = numerical_approx(K, digits=4)
+\end{sagesilent}
+
+\begin{subequations}
+    \begin{equation*}
+        G = \frac{1}{\sqrt{2}} = \sage{norm(G)}
+    \end{equation*}
+    \begin{equation*}
+        K = 3 - \sqrt{2} = \sage{norm(K)}
+    \end{equation*}
+\end{subequations}
+
+\begin{equation*}
+    \frac{U_a}{U_e} = \frac{K \cdot \frac{1}{R_1 R_2 C_1 C_2}}{s^2+s[\frac{R_1 C_2 + R_2 C_2 + R_1 C_1 \cdot (1-k)}{R_1 R_2 C_1 C_2}] + \frac{1}{R_1 R_2 C_1 C_2}}
+    \tag*{mit \quad $s = j \cdot w$}
+\end{equation*}
+
+Da in dieser Übung $R_1 = R_2$ und $C_1 = C_2$ entspricht, kann das Polynom vereinfacht werden. Durch umformen und einsetzten von $w_c = \frac{f_c}{\sqrt{R_1 R_2 C_1 C_2}}$, wird das Polynom weiter vereinfacht:
+
+\begin{equation*}
+    \frac{U_a}{U_e} = \frac{K \cdot w_c^2}{s^2 + s \cdot w_c \cdot (3-K) + w_c^2}
+\end{equation*}
+
+\clearpage
+
+\section{Passiver vs. Aktiver Filter}
+
+Im Gegensatz zum passiven Filter haben aktive Filter höhere Eingangs- und niedrigere Ausgangsimpedanzen. Aufgrund des OPVs benutzen aktive Filter \underline{nicht} die Energie des Signals sondern benötigen eine externe Stromversorgung.
+
+\section{Berechnungen}
+
+\subsection{Korrektur der Grenzfrequenz}
+
+Da es sich bei der Sallen-Key-Topologie um Filter der zweiten Ordnung handelt, muss die Grenzfrequenz $f_c$ korrigiert werden, um weiterhin eine Verstärkung von $-3dB$ zu erreichen:
+
+\begin{sagesilent}
+    f_3db = f_c * sqrt(2^(1/2) - 1)
 \end{sagesilent}
 
 \begin{align*}
-    U &= R \cdot I \\
-    U &= \sage{norm(R)} \cdot \sage{norm(I)} \\
-    U &= \sage{norm(U)}V
+    f_{(-3dB)} &= f_c \sqrt{2^{\frac{1}{n}} - 1} \tag*{($f_c = \sage{f_c}Hz$)} \\
+    f_{(-3dB)} &= \sage{f_c} \cdot \sqrt{2^{\frac{1}{2}} - 1} \\
+    f_{(-3dB)} &= \sage{norm(f_3db)}Hz
 \end{align*}
 
-\section{Simulation}
+\subsection{Kapazität $C$}
 
-\section{Auswertung}
-
-\begin{sagesilent}
-    measures = Measures(
-        [
-            '$R$ in $\Omega$',
-            '$I$ in $A$', 
-            '$U_a$ in $V$'
-        ], [
-            [norm(R), '0.005', '0.4775'],
-            [norm(R), '0.010', '0.4775']
-    ])
-
-    List_R = measures.columns[0]
-    List_I = measures.columns[1]
-    List_Ua = measures.columns[2]
-\end{sagesilent}
-
-\subsection{Messwerte}
-
-\begin{center}
-    \renewcommand{\arraystretch}{1.2}
-    \sage{measures.table}
-\end{center}
-
-\subsection{Grafische Darstellung}
+Um nun den Bauteilwert für die Kapazität $C$ zu berechnen, wird die Formel der Grenzfrequenz $f_{(-3dB)}$ bzw. $f_c$ für die zweite Ordnung umgeformt:
 
 \begin{sagesilent}
-    f = list_plot(
-        list(zip(List_I, List_Ua)),
-        color='blue',
-        plotjoined=True,
-        figsize=[5,2],
-        axes_labels=['$I$ in $A$', '$U_a$ in $V$'],
-        axes_labels_size=1
-    )
+    C = 1/(2*pi*R*f_3db)
+    C = numerical_approx(C, digits=3)
 \end{sagesilent}
+
+\begin{align*}
+    f_{(-3dB)} &= \frac{1}{2\pi \sqrt{R_1 R_2 C_1 C_2}} \tag*{($R_1 = R_2$, $C_1 = C_2$)} \\
+    f_{(-3dB)} &= \frac{1}{2\pi \cdot R \cdot C} \\
+    C &= \frac{1}{2\pi \cdot R \cdot f_{(-3dB)}} \tag*{($R = \sage{R}\Omega$)} \\
+    C &= \frac{1}{2\pi \cdot \sage{R} \cdot \sage{norm(f_3db)}} \\
+    C &= \sage{C}F
+\end{align*}
+
+\subsection{Widerstände $R_3$ und $R_4$}
+
+Die letzten zwei Bauteilwerte, für die Widerstände $R_3$ und $R_4$, werden über das Widerstandsverhältnis des Verstärkungsfaktors $K$ ausgerechnet:
+
+\begin{align*}
+    K &= 1 + \frac{R_4}{R_3} \\
+    \frac{R_4}{R_3} &= K - 1 \tag*{($K = \sage{K}$)} \\
+    \frac{R_4}{R_3} &= \sage{K-1} = \frac{\sage{K-1}}{1} \tag*{(Angenommen $R_3 = 10k\Omega$)} \\
+    \frac{R_4}{R_3} &\sim \frac{\sage{(K-1)*10}\Omega}{10k\Omega}
+\end{align*}
+
+\section{Simulationen}
+
+\subsection{Passiver Tiefpass-Filter \tsizesmall{\textit{(2. Ordnung)}}}
 
 \begin{figure}[H]
     \centering
-    \sageplot{f}
-    \caption{Ausgangskennlinie mit gemessene Werte}
+    \includesvg[width=\textwidth]{images/01 Passiver Tiefpass-Filter.svg}
+    \caption{Amplituden- und Phasengang des Simulierten passiven Tiefpass-Filters}
+\end{figure}
+
+\subsection{Aktiver Tiefpass-Filter \tsizesmall{\textit{(2. Ordnung)}}}
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=\textwidth]{images/02 Aktiver Tiefpass-Filter.svg}
+    \caption{Amplituden- und Phasengang des Simulierten aktiven Tiefpass-Filters}
 \end{figure}
 
 \clearpage
+
+\section{Auswertung}
+
+\subsection{Messwerte}
+
+Aufgrund eines falsch gewählten OPVs konnten aus der aufgebauten Schaltung keine Werte zur Auswertung entnommen werden. Stattdessen wurde der aktive Filter ebenfalls Simuliert.
 
 \subsection{Verwendete Geräte}
 
 \medskip
 
 \begin{devicelist}
-    \devicecat{}{2}{
-        \device{}{}
-        \device{}{}
+    \devicecat{Frequenzgenerator}{1}{
+        \device{ET-MTL1-FG01}{U_e}
+    }
+    \devicecat{Widerstands-Dekade}{2}{
+        \device{ET-MTL1-RD09}{R_1}
+        \device{ET-MTL1-RD14}{R_2}
+        \device{ET-MTL1-RD28}{R_3}
+        \device{ET-MTL1-RG26}{R_4}
+    }
+    \devicecat{Kapazitäts-Dekade}{3}{
+        \device{ET-MTL1-CD11}{C_1}
+        \device{ET-MTL1-CD18}{C_2}
+    }
+    \devicecat{Oszilloskop}{1}{
+        \device{ET-MTL1-OS04}{U_e, U_a}
+    }
+    \devicecat{Operationsverstärker}{1}{
+        \device{OP27}{}
     }
 \end{devicelist}
 
