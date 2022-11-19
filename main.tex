@@ -35,20 +35,23 @@ Angaben: $f_c = \sage{f_c}Hz$, $R_1 = R_2 = \sage{R}\Omega$, $C_1 = C_2$
     \subsubsection{Erste Ordnung}
 
     \begin{circuitikz}
+        \coordinate (in+) at (0,0);
+        \coordinate (in-) at (0,-2);
+
         \draw
-           (0,0)    coordinate (in+)
-        ++ (3,0)    coordinate (out+)
-           (0,-2)   coordinate (in-)
-        ++ (3,0)    coordinate (out-)
+        (in+) to[R=$R$,o-] ++(2,0) coordinate (aux1)
+        to[short,-o] ++(1,0) coordinate (out+)
 
-        (in+)   to[R=$R$,o-] ++(2,0) coordinate (aux1)
-                to[short,-o] (out+)
-        (aux1)  to[C=$C$,*-*] (aux1 |- out-)
-        (in-)   to[short,o-o] (out-)
+        (aux1) to[C=$C$,*-*] (aux1 |- in-)
 
-        (in+)   to[open, v=$U_e$] (in-)
-        (out+)  to[open, v^=$U_a$] (out-)
+        (in-) to[short,o-o] (in- -| out+) coordinate (out-)
+
+        (in+) to[open,name=inV,v] (in-)
+        (out+) to[open,name=outV,v^] (out-)
         ;
+
+        \voltage{inV}{$U_e$}
+        \voltage{outV}{$U_a$}
     \end{circuitikz}
 
     \medskip
@@ -66,24 +69,26 @@ Angaben: $f_c = \sage{f_c}Hz$, $R_1 = R_2 = \sage{R}\Omega$, $C_1 = C_2$
     \subsubsection{Zweite Ordnung}
 
     \begin{circuitikz}
+        \coordinate (in+) at (0,0);
+        \coordinate (in-) at (0,-2);
+
         \draw
-           (0,0)    coordinate (in+)
-        ++ (5,0)    coordinate (out+)
-           (0,-2)   coordinate (in-)
-        ++ (5,0)    coordinate (out-)
+        (in+) to[R=$R_1$,o-] ++(2,0) coordinate (aux1)
+        to[C=$C_1$,*-*] (aux1 |- in-)
 
-        (in+)   to[R=$R_1$,o-] ++(2,0) coordinate (aux1)
-                to[C=$C_1$,*-*] (aux1 |- out-)
+        (aux1) to[R=$R_2$] ++(2,0) coordinate (aux2)
+        to[short,-o] ++(1,0) coordinate (out+)
 
-        (aux1)  to[R=$R_2$] ++(2,0) coordinate (aux3)
-                to[short,-o] (out+)
-        (aux3)  to[C=$C_2$,*-*] (aux3 |- out-)
+        (aux2) to[C=$C_2$,*-*] (aux2 |- in-)
         
-        (in-)   to[short,o-o] (out-)
+        (in-) to[short,o-o] (in- -| out+) coordinate (out-)
 
-        (in+)   to[open, v=$U_e$] (in-)
-        (out+)  to[open, v^=$U_a$] (out-)
+        (in+) to[open,name=inV,v] (in-)
+        (out+) to[open,name=outV,v^] (out-)
         ;
+
+        \voltage{inV}{$U_e$}
+        \voltage{outV}{$U_a$}
     \end{circuitikz}
 
     \medskip
@@ -118,30 +123,30 @@ Ab Filter der 2. Ordnung entspricht die Grenzfrequenz $f_c$ nicht mehr der Verst
 \begin{figure}[h]
     \centering
     \begin{circuitikz}
+        \coordinate (in+) at (0,0);
+        \coordinate (in-) at (0,-5);
+
         \draw
-           (0,0)    coordinate (in+)
-        ++ (8,-0.5) coordinate (out+)
-           (0,-5)   coordinate (in-)
-        ++ (8,0)    coordinate (out-)
+        (in+) to[R=$R_1$,o-*] ++(2,0) coordinate (aux1)
+        to[R=$R_2$] ++(2,0) coordinate (aux2)
+        to[short,*-] ++(0,-2) coordinate (aux3)
+        to[C=$C_2$,-*] (aux3 |- in-)
 
-        (in+)       to[R=$R_1$,o-*]         ++(2,0)     coordinate (aux1)
-        ++(4,-0.5)  node[op amp,yscale=-1]  (opv) {}
-        (aux1)      to[R=$R_2$]             (opv.+)
-        ++(-0.5,0)  to[short,*-]            ++(0,-2)    coordinate (aux2)
-                    to[C=$C_2$,-*]          (aux2 |- out-)
-        (aux1)      to[short]               ++(0,2)     coordinate (aux3)
-                    to[C=$C_1$]             (aux3 -| opv.out)
-                    to[short]               (opv.out)
-                    to[short]               ++(0,-2)    coordinate (aux4)
-                    to[R=$R_3$,-*]          (aux4 |- out-)
-        (opv.-)     to[short]               ++(0,-1)    coordinate (aux5)
-                    to[R=$R_4$,-*]          (aux5 -| opv.out)
-        (opv.out)   to[short,-o]            (out+)
-        (in-)       to[short,o-o]           (out-)
+        (aux2) -- ++(1,0) node[op amp,noinv input up,anchor=+] (OPV) {$OPV$}
+        (OPV.-) -- ++(0,-1) coordinate (aux4) to[R=$R_4$,-*] (aux4 -| OPV.out)
+        (OPV.out) -- ++(0,-2) coordinate (aux5) to[R=$R_3$,-*] (aux5 |- in-)
 
-        (in+)   to[open, v=$U_e$] (in-)
-        (out+)  to[open, v^=$U_a$] (out-)
+        (aux1) -- ++(0,2) coordinate (aux6) to[C=$C_1$] (aux6 -| OPV.out) -- (OPV.out)
+
+        (OPV.out) to[short,-o] ++(1,0) coordinate (out+)
+        (in-) to[short,o-o] (in- -| out+) coordinate (out-)
+
+        (in+)   to[open,name=inV,v] (in-)
+        (out+)  to[open,name=outV,v^] (out-)
         ;
+
+        \voltage{inV}{$U_e$}
+        \voltage{outV}{$U_a$}
     \end{circuitikz}
 \end{figure}
 
@@ -286,7 +291,7 @@ Aufgrund eines falsch gewählten OPVs konnten aus der aufgebauten Schaltung kein
         \device{ET-MTL1-OS04}{U_e, U_a}
     }
     \devicecat{Operationsverstärker}{1}{
-        \device{OP27}{}
+        \device{OP27}{OPV}
     }
 \end{devicelist}
 
