@@ -159,16 +159,16 @@ Ab Filter der 2. Ordnung entspricht die Grenzfrequenz $f_c$ nicht mehr der Verst
 
 \subsection{Filter-Polynom \textit{(Butterworth)}}
 
-Beim Butterworth-Polynom wird ein Signal an der Grenzfrequenz auf das $\frac{1}{\sqrt{2}} = 0,707$-fache des ursprünglichen Signals abgeschwächt. Daraus ergibt sich die Güte $G$, die Gleichspannungsverstärkung $K$, sowie die Übertragungsfunktion $\frac{U_a}{U_e}$:
+Beim Butterworth-Polynom wird ein Signal an der Grenzfrequenz auf das $\frac{1}{\sqrt{2}} = 0,707$-fache des ursprünglichen Signals abgeschwächt. Daraus ergibt sich die Güte $Q$, die Gleichspannungsverstärkung $K$, sowie die Übertragungsfunktion $\frac{U_a}{U_e}$:
 
 \begin{sagesilent}
-    G = 1/sqrt(2)
+    Q = 1/sqrt(2)
     K = 3 - sqrt(2)
 \end{sagesilent}
 
 \begin{subequations}
     \begin{equation*}
-        G = \frac{1}{\sqrt{2}} = \var{G, 3}
+        Q = \frac{1}{\sqrt{2}} = \var{Q, 3}
     \end{equation*}
     \begin{equation*}
         K = 3 - \sqrt{2} = \var{K, 3}
