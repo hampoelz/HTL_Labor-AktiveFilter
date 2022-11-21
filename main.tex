@@ -25,7 +25,7 @@ Es soll ein aktiver \textit{(Butterworth-)} Filter der zweiten Ordnung über der
     R = 100
 \end{sagesilent}
 
-Angaben: $f_c = \sage{f_c}Hz$, $R_1 = R_2 = \sage{R}\Omega$, $C_1 = C_2$
+Angaben: $f_c = \var{f_c}Hz$, $R_1 = R_2 = \var{R}\Omega$, $C_1 = C_2$
 
 \section{Passiver Tiefpass-Filter}
 
@@ -163,18 +163,15 @@ Beim Butterworth-Polynom wird ein Signal an der Grenzfrequenz auf das $\frac{1}{
 
 \begin{sagesilent}
     G = 1/sqrt(2)
-    G = numerical_approx(G, digits=4)
-
     K = 3 - sqrt(2)
-    K = numerical_approx(K, digits=4)
 \end{sagesilent}
 
 \begin{subequations}
     \begin{equation*}
-        G = \frac{1}{\sqrt{2}} = \sage{norm(G)}
+        G = \frac{1}{\sqrt{2}} = \var{G, 3}
     \end{equation*}
     \begin{equation*}
-        K = 3 - \sqrt{2} = \sage{norm(K)}
+        K = 3 - \sqrt{2} = \var{K, 3}
     \end{equation*}
 \end{subequations}
 
@@ -210,9 +207,9 @@ Da es sich bei der Sallen-Key-Topologie um Filter der zweiten Ordnung handelt, m
 \end{sagesilent}
 
 \begin{align*}
-    f_{(-3dB)} &= f_c \sqrt{2^{\frac{1}{n}} - 1} \tag*{($f_{(-3dB)} = \sage{f_3db}Hz$)} \\
-    \sage{norm(f_3db)} &= f_c \cdot \sqrt{2^{\frac{1}{2}} - 1} \\
-    \rightarrow f_c &= \sage{norm(f_c)}Hz
+    f_{(-3dB)} &= f_c \sqrt{2^{\frac{1}{n}} - 1} \tag*{($f_{(-3dB)} = \var{f_3db}Hz$)} \\
+    \var{f_3db} &= f_c \cdot \sqrt{2^{\frac{1}{2}} - 1} \\
+    \rightarrow f_c &= \var{f_c}Hz
 \end{align*}
 
 \subsection{Kapazität $C$}
@@ -221,15 +218,14 @@ Um nun den Bauteilwert für die Kapazität $C$ zu berechnen, wird die Formel der
 
 \begin{sagesilent}
     C = 1/(2*pi*R*f_c)
-    C = numerical_approx(C, digits=3)
 \end{sagesilent}
 
 \begin{align*}
     f_c &= \frac{1}{2\pi \sqrt{R_1 R_2 C_1 C_2}} \tag*{($R_1 = R_2$, $C_1 = C_2$)} \\
     f_c &= \frac{1}{2\pi \cdot R \cdot C} \\
-    C &= \frac{1}{2\pi \cdot R \cdot f_c} \tag*{($R = \sage{R}\Omega$)} \\
-    C &= \frac{1}{2\pi \cdot \sage{R} \cdot \sage{norm(f_c)}} \\
-    C &= \sage{C}F
+    C &= \frac{1}{2\pi \cdot R \cdot f_c} \tag*{($R = \var{R}\Omega$)} \\
+    C &= \frac{1}{2\pi \cdot \var{R} \cdot \var{f_c}} \\
+    C &= \var{C, 2}F
 \end{align*}
 
 \subsection{Widerstände $R_3$ und $R_4$}
@@ -238,9 +234,9 @@ Die letzten zwei Bauteilwerte, für die Widerstände $R_3$ und $R_4$, werden üb
 
 \begin{align*}
     K &= 1 + \frac{R_4}{R_3} \\
-    \frac{R_4}{R_3} &= K - 1 \tag*{($K = \sage{K}$)} \\
-    \frac{R_4}{R_3} &= \sage{K-1} = \frac{\sage{K-1}}{1} \tag*{(Angenommen $R_3 = 10k\Omega$)} \\
-    \frac{R_4}{R_3} &\sim \frac{\sage{(K-1)*10}\Omega}{10k\Omega}
+    \frac{R_4}{R_3} &= K - 1 \tag*{($K = \var{K,3}$)} \\
+    \frac{R_4}{R_3} &= \var{K-1,3} = \frac{\var{K-1,3}}{1} \tag*{(Angenommen $R_3 = 10k\Omega$)} \\
+    \frac{R_4}{R_3} &\sim \frac{\var{(K-1)*10,3}\Omega}{10k\Omega}
 \end{align*}
 
 \section{Simulationen}
