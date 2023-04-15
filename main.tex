@@ -17,7 +17,7 @@
 
 \section{Einführung}
 
-Es soll ein aktiver \textit{(Butterworth-)} Filter der zweiten Ordnung über der Sallen-Key-Schaltung dimensiniert und aufgebaut werden. Des weiteren soll ein passiver Filter der zweiten Ordnung Simuliert werden.
+Es soll ein aktiver \textit{(Butterworth-)} Filter der zweiten Ordnung über der Sallen-Key-Schaltung dimensioniert und aufgebaut werden. Des weiteren soll ein passiver Filter der zweiten Ordnung Simuliert werden.
 
 \begin{sagesilent}
     f_c = 1000
@@ -104,13 +104,13 @@ Angaben: $f_c = \SIvar{f_c}{\hertz}$, $R_1 = R_2 = \SIvar{R}{\ohm}$, $C_1 = C_2$
 
 \subsection{Korrektur der Grenzfrequenz}
 
-Ab Filter der 2. Ordnung entspricht die Grenzfrequenz $f_c$ nicht mehr der Verstärkung von $-3dB$. Deshalb muss die Grenzfrequenz für die gewünschte Filter-Ordnung $n$ korrigiert werden:
+Ab Filter der 2. Ordnung entspricht die Grenzfrequenz $f_c$ nicht mehr der Verstärkung von $\qty{-3}{\decibel}$. Deshalb muss die Grenzfrequenz für die gewünschte Filter-Ordnung $n$ korrigiert werden:
 
 \vspace{-1em}
 \begin{align*}
-    f_{(-3dB)} = f_{c} \sqrt{2^{(\frac{1}{n})}-1} &&
+    f_{(\qty{-3}{\decibel})} = f_{c} \sqrt{2^{(\frac{1}{n})}-1} &&
     \text{bzw.} &&
-    w_{(-3dB)} = w_{c} \sqrt{2^{(\frac{1}{n})}-1} &&
+    w_{(\qty{-3}{\decibel})} = w_{c} \sqrt{2^{(\frac{1}{n})}-1} &&
 \end{align*}
 
 \clearpage
@@ -126,12 +126,12 @@ Ab Filter der 2. Ordnung entspricht die Grenzfrequenz $f_c$ nicht mehr der Verst
         \coordinate (in-) at (0,-5);
 
         \draw
-        (in+) to[R=$R_1$,o-*] ++(2,0) coordinate (aux1)
-        to[R=$R_2$] ++(2,0) coordinate (aux2)
+        (in+) to[R, l^=$R_1$, a_=$\SIvar{R}{\ohm}$, o-*] ++(2,0) coordinate (aux1)
+        to[R, l^=$R_2$, a_=$\SIvar{R}{\ohm}$] ++(2,0) coordinate (aux2)
         to[short,*-] ++(0,-2) coordinate (aux3)
         to[C=$C_2$,-*] (aux3 |- in-)
 
-        (aux2) -- ++(1,0) node[op amp,noinv input up,anchor=+] (OPV) {$OPV$}
+        (aux2) -- ++(1,0) node[op amp,noinv input up,anchor=+] (OPV) {OPV}
         (OPV.-) -- ++(0,-1) coordinate (aux4) to[R=$R_4$,-*] (aux4 -| OPV.out)
         (OPV.out) -- ++(0,-2) coordinate (aux5) to[R=$R_3$,-*] (aux5 |- in-)
 
@@ -153,7 +153,7 @@ Ab Filter der 2. Ordnung entspricht die Grenzfrequenz $f_c$ nicht mehr der Verst
 
 \begin{align*}
     A_0 = K &= 1 + \frac{R_4}{R_3} \\
-    K &= 3 - \frac{1}{Q} \tag*{bei K >= 3 ist der Filter instabil!}
+    K &= 3 - \frac{1}{Q} \tag*{bei $K \geq 3$ ist der Filter instabil!}
 \end{align*}
 
 \subsection{Filter-Polynom \textit{(Butterworth)}}
@@ -195,7 +195,7 @@ Im Gegensatz zum passiven Filter haben aktive Filter höhere Eingangs- und niedr
 
 \subsection{Korrektur der Grenzfrequenz}
 
-Da es sich bei der Sallen-Key-Topologie um Filter der zweiten Ordnung handelt, muss die Grenzfrequenz $f_c$ korrigiert werden, um weiterhin eine Verstärkung von $-3dB$ zu erreichen:
+Da es sich bei der Sallen-Key-Topologie um Filter der zweiten Ordnung handelt, muss die Grenzfrequenz $f_c$ korrigiert werden, um weiterhin eine Verstärkung von $\qty{-3}{\decibel}$ zu erreichen:
 
 \begin{sagesilent}
     f_3db = f_c
@@ -203,11 +203,11 @@ Da es sich bei der Sallen-Key-Topologie um Filter der zweiten Ordnung handelt, m
 
     equ1 = f_3db == f_c * sqrt(2^(1/2) - 1)
     f_c = solve(equ1, f_c, solution_dict=True)[0][f_c]
-    f_c = round(f_c, ndigits=2)
+    f_c = round(f_c)
 \end{sagesilent}
 
 \begin{align*}
-    f_{(-3dB)} &= f_c \sqrt{2^{\frac{1}{n}} - 1} \tag*{($f_{(-3dB)} = \SIvar{f_3db}{\hertz}$)} \\
+    f_{(\qty{-3}{\decibel})} &= f_c \sqrt{2^{\frac{1}{n}} - 1} \tag*{($f_{(\qty{-3}{\decibel})} = \SIvar{f_3db}{\hertz}$)} \\
     \var{f_3db} &= f_c \cdot \sqrt{2^{\frac{1}{2}} - 1} \\
     \rightarrow f_c &= \SIvar{f_c}{\hertz}
 \end{align*}
@@ -250,7 +250,7 @@ Die letzten zwei Bauteilwerte, für die Widerstände $R_3$ und $R_4$, werden üb
 \begin{figure}[H]
     \centering
     \includesvg[width=\textwidth]{images/01 Passiver Tiefpass-Filter.svg}
-    \caption{Amplituden- und Phasengang des Simulierten passiven Tiefpass-Filters}
+    \caption{Betrags- und Phasengang des Simulierten passiven Tiefpass-Filters}
 \end{figure}
 
 \subsection{Aktiver Tiefpass-Filter \tsizesmall{\textit{(2. Ordnung)}}}
@@ -258,18 +258,18 @@ Die letzten zwei Bauteilwerte, für die Widerstände $R_3$ und $R_4$, werden üb
 \begin{figure}[H]
     \centering
     \includesvg[width=\textwidth]{images/02 Aktiver Tiefpass-Filter.svg}
-    \caption{Amplituden- und Phasengang des Simulierten aktiven Tiefpass-Filters}
+    \caption{Betrags- und Phasengang des Simulierten aktiven Tiefpass-Filters}
 \end{figure}
 
 \clearpage
 
 \section{Auswertung}
 
-\subsection{Messwerte}
+\subsection{Messdaten}
 
 Aufgrund eines falsch gewählten OPVs konnten aus der aufgebauten Schaltung keine Werte zur Auswertung entnommen werden. Stattdessen wurde der aktive Filter ebenfalls Simuliert.
 
-\subsection{Verwendete Geräte}
+\subsection{Verwendete Komponenten}
 
 \medskip
 
