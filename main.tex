@@ -243,25 +243,63 @@ Die letzten zwei Bauteilwerte, für die Widerstände $R_3$ und $R_4$, werden üb
     \frac{R_4}{R_3} &\sim \frac{\SIvar{(K-1)*R_3, 0}{\ohm}}{\SIvar{R_3}{\ohm}}
 \end{align*}
 
-\section{Simulationen}
+\section{Simulation}
 
-\subsection{Passiver Tiefpass-Filter \tsizesmall{\textit{(2. Ordnung)}}}
+\begin{sagesilent}
+    simulation1_data = LTSpice.plot_data_polar("src/01 Passiver Tiefpass-Filter.txt")
+    simulation1_data_mag, simulation1_data_pha = simulation1_data["V(out)"]
+
+    simulation_plot_mag = list_plot(
+        simulation1_data_mag,
+        axes_labels=["Frequenz in Hz", "Betrag in dB"],
+        legend_label="passiver Filter",
+        scale='semilogx',
+        figsize=[5.5,3],
+        plotjoined=True,
+        frame=True
+    )
+
+    simulation_plot_pha = list_plot(
+        simulation1_data_pha,
+        axes_labels=["Frequenz in Hz", "Phase in $\degree$"],
+        legend_label="passiver Filter",
+        scale='semilogx',
+        figsize=[5.5,3],
+        plotjoined=True,
+        frame=True
+    )
+
+    simulation2_data = LTSpice.plot_data_polar("src/02 Aktiver Tiefpass-Filter.txt")
+    simulation2_data_mag, simulation2_data_pha = simulation2_data["V(out)"]
+
+    simulation_plot_mag += list_plot(
+        simulation2_data_mag,
+        legend_label="aktiver Filter",
+        plotjoined=True,
+        color="green"
+    )
+
+    simulation_plot_pha += list_plot(
+        simulation2_data_pha,
+        legend_label="aktiver Filter",
+        plotjoined=True,
+        color="green"
+    )
+\end{sagesilent}
 
 \begin{figure}[H]
     \centering
-    \includesvg[width=\textwidth]{images/01 Passiver Tiefpass-Filter.svg}
-    \caption{Betrags- und Phasengang des Simulierten passiven Tiefpass-Filters}
+    \begin{subfigure}{\textwidth}
+        \centering
+        \sageplot{simulation_plot_mag}
+    \end{subfigure}
+    \quad
+    \begin{subfigure}{\textwidth}
+        \centering
+        \sageplot{simulation_plot_pha}
+    \end{subfigure}
+    \caption{Betrags- und Phasengang des Simulierten passiven und aktiven Tiefpass-Filters der zweiten Ordnung}
 \end{figure}
-
-\subsection{Aktiver Tiefpass-Filter \tsizesmall{\textit{(2. Ordnung)}}}
-
-\begin{figure}[H]
-    \centering
-    \includesvg[width=\textwidth]{images/02 Aktiver Tiefpass-Filter.svg}
-    \caption{Betrags- und Phasengang des Simulierten aktiven Tiefpass-Filters}
-\end{figure}
-
-\clearpage
 
 \section{Auswertung}
 
