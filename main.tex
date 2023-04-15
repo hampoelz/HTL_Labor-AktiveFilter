@@ -24,7 +24,7 @@ Es soll ein aktiver \textit{(Butterworth-)} Filter der zweiten Ordnung über der
     R = 100
 \end{sagesilent}
 
-Angaben: $f_c = \var{f_c}Hz$, $R_1 = R_2 = \var{R}\Omega$, $C_1 = C_2$
+Angaben: $f_c = \SIvar{f_c}{\hertz}$, $R_1 = R_2 = \SIvar{R}{\ohm}$, $C_1 = C_2$
 
 \section{Passiver Tiefpass-Filter}
 
@@ -203,12 +203,13 @@ Da es sich bei der Sallen-Key-Topologie um Filter der zweiten Ordnung handelt, m
 
     equ1 = f_3db == f_c * sqrt(2^(1/2) - 1)
     f_c = solve(equ1, f_c, solution_dict=True)[0][f_c]
+    f_c = round(f_c, ndigits=2)
 \end{sagesilent}
 
 \begin{align*}
-    f_{(-3dB)} &= f_c \sqrt{2^{\frac{1}{n}} - 1} \tag*{($f_{(-3dB)} = \var{f_3db}Hz$)} \\
+    f_{(-3dB)} &= f_c \sqrt{2^{\frac{1}{n}} - 1} \tag*{($f_{(-3dB)} = \SIvar{f_3db}{\hertz}$)} \\
     \var{f_3db} &= f_c \cdot \sqrt{2^{\frac{1}{2}} - 1} \\
-    \rightarrow f_c &= \var{f_c}Hz
+    \rightarrow f_c &= \SIvar{f_c}{\hertz}
 \end{align*}
 
 \subsection{Kapazität $C$}
@@ -222,20 +223,24 @@ Um nun den Bauteilwert für die Kapazität $C$ zu berechnen, wird die Formel der
 \begin{align*}
     f_c &= \frac{1}{2\pi \sqrt{R_1 R_2 C_1 C_2}} \tag*{($R_1 = R_2$, $C_1 = C_2$)} \\
     f_c &= \frac{1}{2\pi \cdot R \cdot C} \\
-    C &= \frac{1}{2\pi \cdot R \cdot f_c} \tag*{($R = \var{R}\Omega$)} \\
+    C &= \frac{1}{2\pi \cdot R \cdot f_c} \tag*{($R = \SIvar{R}{\ohm}$)} \\
     C &= \frac{1}{2\pi \cdot \var{R} \cdot \var{f_c}} \\
-    C &= \var{C, 2}F
+    C &= \SIvar{C, 2}{\farad}
 \end{align*}
 
 \subsection{Widerstände $R_3$ und $R_4$}
 
 Die letzten zwei Bauteilwerte, für die Widerstände $R_3$ und $R_4$, werden über das Widerstandsverhältnis des Verstärkungsfaktors $K$ ausgerechnet:
 
+\begin{sagesilent}
+    R_3 = 10000
+\end{sagesilent}
+
 \begin{align*}
     K &= 1 + \frac{R_4}{R_3} \\
-    \frac{R_4}{R_3} &= K - 1 \tag*{($K = \var{K,3}$)} \\
-    \frac{R_4}{R_3} &= \var{K-1,3} = \frac{\var{K-1,3}}{1} \tag*{(Angenommen $R_3 = 10k\Omega$)} \\
-    \frac{R_4}{R_3} &\sim \frac{\var{(K-1)*10,3}\Omega}{10k\Omega}
+    \frac{R_4}{R_3} &= K - 1 \tag*{($K = \var{K, 3}$)} \\
+    \frac{R_4}{R_3} &= \var{K-1, 3} = \frac{\var{K-1, 3}}{1} \tag*{(Angenommen $R_3 = \SIvar{R_3}{\ohm}$)} \\
+    \frac{R_4}{R_3} &\sim \frac{\SIvar{(K-1)*R_3, 0}{\ohm}}{\SIvar{R_3}{\ohm}}
 \end{align*}
 
 \section{Simulationen}
